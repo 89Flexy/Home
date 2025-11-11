@@ -131,10 +131,10 @@
     // Hide preloader content immediately
     preloader.style.display = "none";
 
-    // Redirect after circle animation completes
-    setTimeout(() => {
+    // Wait until audio ends, then redirect
+    introAudio.addEventListener("ended", () => {
       window.location.href = "https://89flexy.github.io/Flexy.in/index.html";
-    }, 1000); // matches circle animation duration
+    });
   });
 </script>
 
