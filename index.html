@@ -142,25 +142,28 @@ const startBtn = document.getElementById("startBtn");
 const preloader = document.getElementById("preloader");
 const introAudio = document.getElementById("introAudio");
 
-// Focus the button on load
-startBtn.focus();
-startBtn.classList.add("tv-focus");
+// Focus by default
+startBtn.setAttribute("tabindex", "0");
+setTimeout(() => startBtn.focus(), 500);
 
-// ✅ Handle TV remote OK/Enter
+// 🎯 Remote key handler — covers all Android / Croma TV keycodes
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" || e.keyCode === 13) {
+  const enterKeys = [13, 23, 66, 160, 195]; // All known Enter/OK codes
+  if (enterKeys.includes(e.keyCode)) {
+    e.preventDefault();
     startBtn.click();
   }
-  if (e.key === "ArrowUp" || e.key === "ArrowDown" || e.key === "ArrowLeft" || e.key === "ArrowRight") {
-    // force focus again if lost
+
+  // Keep button focused if user moves arrows
+  if (["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)) {
     startBtn.focus();
-    startBtn.classList.add("tv-focus");
   }
 });
 
-// ✅ Button click event
+// ✅ Button click logic
 startBtn.addEventListener("click", () => {
-  introAudio.play().catch(()=>{});
+  try { introAudio.play(); } catch(e) {}
+
   preloader.style.display = "none";
 
   const circle = document.createElement("div");
