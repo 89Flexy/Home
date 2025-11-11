@@ -9,7 +9,6 @@ body {
   margin: 0;
   background: #000;
   overflow: hidden;
-  touch-action: none;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -66,7 +65,12 @@ body {
   text-transform: uppercase;
   z-index: 10;
 }
-#startBtn:hover { transform: scale(1.1); box-shadow: 0 8px 25px rgba(0,0,0,0.6); }
+#startBtn:hover, 
+#startBtn:focus {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px #00aaff;
+  outline: none;
+}
 
 @keyframes gradientMove {
   0% { background-position: 0% 50%; }
@@ -88,6 +92,7 @@ body {
   animation: expandCircle 2s ease-in-out forwards, gradientShift 4s infinite ease-in-out;
   z-index: 9999;
 }
+
 @keyframes expandCircle {
   0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
   100% { transform: translate(-50%, -50%) scale(60); opacity: 1; }
@@ -97,6 +102,7 @@ body {
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
+
 .intro-image {
   position: fixed;
   left: 50%;
@@ -108,24 +114,12 @@ body {
   border-radius: 12px;
   animation: fadeHoldImage 3.5s ease-in-out forwards;
 }
+
 @keyframes fadeHoldImage {
   0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
   20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
   77% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
   100% { opacity: 0; transform: translate(-50%, -50%) scale(1.2); }
-}
-
-/* Cursor */
-#cursor {
-  position: fixed;
-  width: 20px;
-  height: 20px;
-  background: white;
-  border-radius: 50%;
-  pointer-events: none;
-  transform: translate(-50%, -50%);
-  z-index: 99999;
-  transition: left 0.05s linear, top 0.05s linear;
 }
 </style>
 </head>
@@ -141,47 +135,25 @@ body {
   </audio>
 </div>
 
-<div id="cursor"></div>
-
 <script>
-const cursor = document.getElementById("cursor");
+// Get elements
 const startBtn = document.getElementById("startBtn");
 const preloader = document.getElementById("preloader");
 const introAudio = document.getElementById("introAudio");
 
-let cursorX = window.innerWidth / 2;
-let cursorY = window.innerHeight / 2;
-cursor.style.left = cursorX + "px";
-cursor.style.top = cursorY + "px";
+// Focus start button automatically (for TV remote)
+startBtn.focus();
 
-// Remote movement
-document.addEventListener("keydown", e => {
-  const step = 40;
-  if (e.key === "ArrowUp") cursorY = Math.max(0, cursorY - step);
-  if (e.key === "ArrowDown") cursorY = Math.min(window.innerHeight, cursorY + step);
-  if (e.key === "ArrowLeft") cursorX = Math.max(0, cursorX - step);
-  if (e.key === "ArrowRight") cursorX = Math.min(window.innerWidth, cursorX + step);
-  cursor.style.left = cursorX + "px";
-  cursor.style.top = cursorY + "px";
-  if (e.key === "Enter") simulateClick(cursorX, cursorY);
+// Remote enter key click
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" || e.keyCode === 13) {
+    if (document.activeElement === startBtn) {
+      startBtn.click();
+    }
+  }
 });
 
-// Touch support
-document.addEventListener("touchmove", e => {
-  const t = e.touches[0];
-  cursorX = t.clientX;
-  cursorY = t.clientY;
-  cursor.style.left = cursorX + "px";
-  cursor.style.top = cursorY + "px";
-});
-document.addEventListener("touchend", () => simulateClick(cursorX, cursorY));
-
-function simulateClick(x, y) {
-  const el = document.elementFromPoint(x, y);
-  if (el && el.tagName === "BUTTON") el.click();
-}
-
-// Start button
+// Start button click
 startBtn.addEventListener("click", () => {
   introAudio.play().catch(()=>{});
   preloader.style.display = "none";
@@ -192,7 +164,9 @@ startBtn.addEventListener("click", () => {
   img.src = "https://i.ibb.co/GQ7f6Wt2/1000044478-removebg-preview.png";
   img.classList.add("intro-image");
   document.body.appendChild(img);
-  setTimeout(()=>window.location.href="https://89flexy.github.io/Flexy.in/index.html", 3500);
+  setTimeout(() => {
+    window.location.href = "https://89flexy.github.io/Flexy.in/index.html";
+  }, 3500);
 });
 </script>
 
