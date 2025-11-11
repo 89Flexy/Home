@@ -1,18 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="description" content="89 flex-Anime site & other"/>
-<link rel="canonical" href="https://89flexy.github.io/Flexy.in/" />
-<meta property="og:locale" content="en_US" />
-<meta property="og:type" content="website" />
-<meta property="og:title" content="89 Flex" />
-<meta property="og:description" content="89Flex-Anime Site & Other" />
-<meta property="og:url" content="https://89flexy.github.io/Flexy.in/" />
-<meta property="og:site_name" content="89 Flex" />
-<link rel="icon" href="https://i.ibb.co/ymKVH9q6/20250920-155127.png" sizes="32x32" />
-<link rel="icon" href="https://i.ibb.co/ymKVH9q6/20250920-155127.png" sizes="192x192" />
-<link rel="apple-touch-icon" href="https://i.ibb.co/ymKVH9q6/20250920-155127.png" />
-<meta name="msapplication-TileImage" content="https://i.ibb.co/ymKVH9q6/20250920-155127.png" />
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>89 Flexy Home</title>
@@ -32,6 +20,7 @@
   .loading-dots {
     display: flex;
     gap: 12px;
+    z-index: 10;
   }
 
   .dot {
@@ -52,7 +41,7 @@
     40% { transform: scale(1); opacity: 1; }
   }
 
-  /* START button at bottom */
+  /* START button */
   #startBtn {
     position: absolute;
     bottom: 50px; 
@@ -71,6 +60,7 @@
     animation: gradientMove 6s ease infinite;
     letter-spacing: 1px;
     text-transform: uppercase;
+    z-index: 10;
   }
 
   #startBtn:hover {
@@ -83,6 +73,27 @@
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
   }
+
+  /* Dark Black Circle animation */
+  .circle-out {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    width: 50px;
+    height: 50px;
+    background: rgba(20, 20, 20, 0.95); /* dark black */
+    border-radius: 50%;
+    box-shadow: 0 0 60px rgba(40, 40, 40, 0.8), 0 0 120px rgba(40, 40, 40, 0.6);
+    transform: translate(-50%, -50%) scale(0);
+    animation: expandCircle 1s forwards;
+    z-index: 9999;
+  }
+
+  @keyframes expandCircle {
+    0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(50); opacity: 1; }
+  }
+
 </style>
 </head>
 <body>
@@ -98,7 +109,7 @@
   </div>
   <button id="startBtn">START</button>
   <audio id="introAudio">
-    <source src="https://github.com/89Flexy/my-audio-site/blob/589e7dd61a991f913d4ef2df447d5d0051ec6417/intro.mp3" type="audio/mpeg">
+    <source src="https://github.com/89Flexy/my-audio-site/blob/6d0c71ed1f1ed88a5f18af7705505a43fdc11a23/intro.mp3" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
 </div>
@@ -106,15 +117,24 @@
 <script>
   const startBtn = document.getElementById("startBtn");
   const introAudio = document.getElementById("introAudio");
+  const preloader = document.getElementById("preloader");
 
   startBtn.addEventListener("click", () => {
-    // Play intro audio
+    // Play audio
     introAudio.play().catch(err => console.log("Audio play blocked", err));
 
-    // Redirect after audio ends
-    introAudio.onended = () => {
+    // Create dark black circle effect
+    const circle = document.createElement("div");
+    circle.classList.add("circle-out");
+    document.body.appendChild(circle);
+
+    // Hide preloader content immediately
+    preloader.style.display = "none";
+
+    // Redirect after circle animation completes
+    setTimeout(() => {
       window.location.href = "https://89flexy.github.io/Flexy.in/index.html";
-    };
+    }, 1000); // matches circle animation duration
   });
 </script>
 
